@@ -11,6 +11,10 @@ import { App } from "./App";
 import { restoreFromStorage } from "../shared/storage";
 import "./styles.css";
 
+// ── Shared Runtime: load custom functions & commands in this context ──
+import "../functions/functions";   // registers CustomFunctions.associate
+import "../commands/commands";     // registers Office.actions.associate
+
 Office.onReady(() => {
     restoreFromStorage();
     const container = document.getElementById("root");

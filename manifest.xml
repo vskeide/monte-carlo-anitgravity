@@ -7,7 +7,7 @@
   xsi:type="TaskPaneApp">
 
   <Id>a1b2c3d4-5678-9abc-def0-1234567890ab</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.1.0.0</Version>
   <ProviderName>MonteCarloSim</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Monte Carlo Sim"/>
@@ -28,15 +28,24 @@
   <Permissions>ReadWriteDocument</Permissions>
 
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+
+    <!-- ═══ SHARED RUNTIME ═══════════════════════════════════════ -->
+    <!-- Both Custom Functions and Task Pane run in the same JS    -->
+    <!-- context. This eliminates cross-runtime init errors.       -->
     <Hosts>
       <Host xsi:type="Workbook">
+
+        <Runtimes>
+          <Runtime resid="Taskpane.Url" lifetime="long"/>
+        </Runtimes>
+
         <AllFormFactors>
           <ExtensionPoint xsi:type="CustomFunctions">
             <Script>
-              <SourceLocation resid="Functions.Page.Url"/>
+              <SourceLocation resid="Taskpane.Url"/>
             </Script>
             <Page>
-              <SourceLocation resid="Functions.Page.Url"/>
+              <SourceLocation resid="Taskpane.Url"/>
             </Page>
             <Metadata>
               <SourceLocation resid="Functions.Metadata.Url"/>
@@ -51,13 +60,12 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
-          <FunctionFile resid="Commands.Url"/>
+          <FunctionFile resid="Taskpane.Url"/>
 
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <CustomTab id="MonteCarloTab">
               <Label resid="Tab.Label"/>
 
-              <!-- Define Group -->
               <Group id="DefineGroup">
                 <Label resid="DefineGroup.Label"/>
                 <Icon>
@@ -83,7 +91,6 @@
                 </Control>
               </Group>
 
-              <!-- Simulation Group -->
               <Group id="SimulationGroup">
                 <Label resid="SimGroup.Label"/>
                 <Icon>
@@ -123,9 +130,6 @@
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/taskpane.html"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/commands.html"/>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.html"/>
-        <bt:Url id="Functions.Page.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.html"/>
         <bt:Url id="Functions.Metadata.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.json"/>
       </bt:Urls>
       <bt:ShortStrings>
