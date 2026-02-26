@@ -44,6 +44,7 @@ function registerDist(
     name: string | undefined,
     cellAddress: string
 ): void {
+    console.log(`[MC] RegisterDist: type=${type}, name=${name}, rawAddress=${cellAddress}`);
     const id = stableId(type, name, cellAddress);
     registerInput({
         id,
@@ -126,6 +127,7 @@ function mcLognormal(
 
 function mcOutput(value: number, name: string, invocation: any): number {
     const address = invocation.address || "";
+    console.log(`[MC] mcOutput: name=${name}, rawAddress=${address}`);
     const id = stableId("output", name, address);
     registerOutput({
         id,
