@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+
+  <Id>a1b2c3d4-5678-9abc-def0-1234567890ab</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>MonteCarloSim</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Monte Carlo Sim"/>
+  <Description DefaultValue="Monte Carlo simulation engine for Excel — probabilistic modeling with distribution functions and interactive analytics."/>
+
+  <IconUrl DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/assets/icon-64.png"/>
+  <SupportUrl DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity"/>
+
+  <Hosts>
+    <Host Name="Workbook"/>
+  </Hosts>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/taskpane.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Workbook">
+        <AllFormFactors>
+          <ExtensionPoint xsi:type="CustomFunctions">
+            <Script>
+              <SourceLocation resid="Functions.Script.Url"/>
+            </Script>
+            <Page>
+              <SourceLocation resid="Functions.Page.Url"/>
+            </Page>
+            <Metadata>
+              <SourceLocation resid="Functions.Metadata.Url"/>
+            </Metadata>
+            <Namespace resid="Functions.Namespace"/>
+          </ExtensionPoint>
+        </AllFormFactors>
+
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
+          </GetStarted>
+          <FunctionFile resid="Commands.Url"/>
+
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="MonteCarloTab">
+              <Label resid="Tab.Label"/>
+
+              <!-- Define Group -->
+              <Group id="DefineGroup">
+                <Label resid="DefineGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="ShowTaskpaneBtn">
+                  <Label resid="ShowTaskpane.Label"/>
+                  <Supertip>
+                    <Title resid="ShowTaskpane.Label"/>
+                    <Description resid="ShowTaskpane.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>MCSimTaskpane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+
+              <!-- Simulation Group -->
+              <Group id="SimulationGroup">
+                <Label resid="SimGroup.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="RunSimBtn">
+                  <Label resid="RunSim.Label"/>
+                  <Supertip>
+                    <Title resid="RunSim.Label"/>
+                    <Description resid="RunSim.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>runSimulation</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/commands.html"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.html"/>
+        <bt:Url id="Functions.Page.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.html"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://vskeide.github.io/monte-carlo-anitgravity/functions.json"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="Monte Carlo Simulation"/>
+        <bt:String id="Tab.Label" DefaultValue="Monte Carlo"/>
+        <bt:String id="DefineGroup.Label" DefaultValue="Define"/>
+        <bt:String id="SimGroup.Label" DefaultValue="Simulation"/>
+        <bt:String id="ShowTaskpane.Label" DefaultValue="Open Panel"/>
+        <bt:String id="RunSim.Label" DefaultValue="Run Simulation"/>
+        <bt:String id="Functions.Namespace" DefaultValue="MC"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Monte Carlo simulation engine — define distributions, run simulations, analyse risk."/>
+        <bt:String id="ShowTaskpane.Tooltip" DefaultValue="Open the Monte Carlo simulation panel for setup, results and charts."/>
+        <bt:String id="RunSim.Tooltip" DefaultValue="Run the Monte Carlo simulation with current settings."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

@@ -1,0 +1,208 @@
+/* ---------------------------------------------------------------
+ * styles.css — Global task pane styles
+ * --------------------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body, #root {
+    height: 100%;
+    font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+    font-size: 13px;
+    color: #1a1a2e;
+    background: #f8f9fc;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar styling ───────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #c4c6cf;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca0ab;
+}
+
+/* ── Tab styles ──────────────────────────────────────────────── */
+.tab-bar {
+    display: flex;
+    border-bottom: 1px solid #e2e4ea;
+    background: #fff;
+    gap: 0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.tab-btn:hover {
+    color: #4f46e5;
+    background: #f0f0ff;
+}
+
+.tab-btn.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+    font-weight: 600;
+}
+
+/* ── Card styles ─────────────────────────────────────────────── */
+.card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.card-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Statistics table ────────────────────────────────────────── */
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.stats-table th {
+    text-align: left;
+    font-weight: 500;
+    color: #6b7280;
+    padding: 5px 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.stats-table td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #f3f4f6;
+    font-variant-numeric: tabular-nums;
+}
+
+.stats-table td:last-child {
+    text-align: right;
+    font-weight: 500;
+    color: #111827;
+}
+
+.stats-table tr:hover td {
+    background: #f9fafb;
+}
+
+/* ── Input / Output list ─────────────────────────────────────── */
+.dist-list {
+    list-style: none;
+}
+
+.dist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+}
+
+.dist-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+/* ── Progress bar ────────────────────────────────────────────── */
+.progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #818cf8);
+    border-radius: 3px;
+    transition: width 0.2s ease;
+}
+
+/* ── Chart container ─────────────────────────────────────────── */
+.chart-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.chart-container svg {
+    display: block;
+    margin: 0 auto;
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+.empty-state svg {
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.empty-state p {
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 260px;
+}
+
+/* ── Utility ─────────────────────────────────────────────────── */
+.muted { color: #9ca3af; }
+.mono { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 11px; }
+.flex-row { display: flex; align-items: center; gap: 8px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mb-8 { margin-bottom: 8px; }

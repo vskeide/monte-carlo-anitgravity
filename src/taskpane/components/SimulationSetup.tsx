@@ -1,0 +1,201 @@
+/* ---------------------------------------------------------------
+ * SimulationSetup.tsx — Setup panel: config, inputs/outputs, run
+ * --------------------------------------------------------------- */
+
+import React from "react";
+import {
+    Button,
+    Slider,
+    Input,
+    Label,
+    MessageBar,
+    MessageBarBody,
+    Tooltip,
+} from "@fluentui/react-components";
+import {
+    Play24Filled,
+    Stop24Filled,
+    Info24Regular,
+} from "@fluentui/react-icons";
+import {
+    SimulationConfig,
+    SimulationProgress,
+} from "../../engine/types";
+import { getInputs, getOutputs } from "../../shared/storage";
+import { MIN_ITERATIONS, MAX_ITERATIONS, formatNumber } from "../../shared/constants";
+
+interface Props {
+    config: SimulationConfig;
+    onConfigChange: (c: SimulationConfig) => void;
+    progress: SimulationProgress | null;
+    onRun: () => void;
+    onCancel: () => void;
+    isRunning: boolean;
+}
+
+export const SimulationSetup: React.FC<Props> = ({
+    config,
+    onConfigChange,
+    progress,
+    onRun,
+    onCancel,
+    isRunning,
+}) => {
+    const inputs = getInputs();
+    const outputs = getOutputs();
+    const pct = progress
+        ? Math.round((progress.currentIteration / progress.totalIterations) * 100)
+        : 0;
+
+    return (
+        <div>
+            {/* ── Iterations ─────────────────────────────────── */}
+            <div className="card">
+                <div className="card-header">Simulation Settings</div>
+
+                <Label htmlFor="iter-slider" style={{ fontSize: 12 }}>
+                    Iterations: <strong>{config.iterations.toLocaleString()}</strong>
+                </Label>
+                <Slider
+                    id="iter-slider"
+                    min={MIN_ITERATIONS}
+                    max={MAX_ITERATIONS}
+                    step={100}
+                    value={config.iterations}
+                    onChange={(_, d) =>
+                        onConfigChange({ ...config, iterations: d.value })
+                    }
+                    disabled={isRunning}
+                    style={{ marginBottom: 10 }}
+                />
+
+                <div className="flex-row" style={{ marginBottom: 10 }}>
+                    <Label htmlFor="seed-input" style={{ fontSize: 12 }}>
+                        Seed (0 = random):
+                    </Label>
+                    <Input
+                        id="seed-input"
+                        type="number"
+                        size="small"
+                        value={String(config.seed)}
+                        onChange={(_, d) =>
+                            onConfigChange({
+                                ...config,
+                                seed: parseInt(d.value) || 0,
+                            })
+                        }
+                        disabled={isRunning}
+                        style={{ width: 80 }}
+                    />
+                </div>
+
+                <div className="flex-row">
+                    <Button
+                        appearance="primary"
+                        icon={<Play24Filled />}
+                        onClick={onRun}
+                        disabled={isRunning}
+                        style={{ flex: 1 }}
+                    >
+                        Run Simulation
+                    </Button>
+                    {isRunning && (
+                        <Button
+                            appearance="outline"
+                            icon={<Stop24Filled />}
+                            onClick={onCancel}
+                        >
+                            Stop
+                        </Button>
+                    )}
+                </div>
+            </div>
+
+            {/* ── Progress ───────────────────────────────────── */}
+            {progress && progress.status === "running" && (
+                <div className="card">
+                    <div className="card-header">Progress</div>
+                    <div className="progress-bar-track">
+                        <div
+                            className="progress-bar-fill"
+                            style={{ width: `${pct}%` }}
+                        />
+                    </div>
+                    <div
+                        className="flex-between mt-8"
+                        style={{ fontSize: 11, color: "#6b7280" }}
+                    >
+                        <span>
+                            {progress.currentIteration.toLocaleString()} /{" "}
+                            {progress.totalIterations.toLocaleString()}
+                        </span>
+                        <span>
+                            {progress.iterationsPerSecond.toFixed(0)} iter/s
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {progress && progress.status === "completed" && (
+                <MessageBar intent="success" style={{ marginBottom: 12 }}>
+                    <MessageBarBody>
+                        Simulation completed — {progress.totalIterations.toLocaleString()} iterations
+                        in {(progress.elapsedMs / 1000).toFixed(1)}s
+                    </MessageBarBody>
+                </MessageBar>
+            )}
+
+            {progress && progress.status === "error" && (
+                <MessageBar intent="error" style={{ marginBottom: 12 }}>
+                    <MessageBarBody>Simulation failed. Check inputs and outputs.</MessageBarBody>
+                </MessageBar>
+            )}
+
+            {/* ── Registered Inputs ──────────────────────────── */}
+            <div className="card">
+                <div className="card-header">
+                    <Info24Regular />
+                    Distribution Inputs ({inputs.length})
+                </div>
+                {inputs.length === 0 ? (
+                    <p className="muted" style={{ fontSize: 11 }}>
+                        No inputs detected. Use <code className="mono">=MC.Normal()</code>,{" "}
+                        <code className="mono">=MC.PERT()</code>, etc. in cells.
+                    </p>
+                ) : (
+                    <ul className="dist-list">
+                        {inputs.map((inp) => (
+                            <li key={inp.id} className="dist-item">
+                                <span>{inp.name}</span>
+                                <span className="dist-badge">{inp.type}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+            {/* ── Registered Outputs ─────────────────────────── */}
+            <div className="card">
+                <div className="card-header">
+                    <Info24Regular />
+                    Simulation Outputs ({outputs.length})
+                </div>
+                {outputs.length === 0 ? (
+                    <p className="muted" style={{ fontSize: 11 }}>
+                        No outputs detected. Use <code className="mono">=MC.Output(cell, "name")</code>{" "}
+                        to mark output cells.
+                    </p>
+                ) : (
+                    <ul className="dist-list">
+                        {outputs.map((out) => (
+                            <li key={out.id} className="dist-item">
+                                <span>{out.name}</span>
+                                <span className="muted mono">{out.cellAddress}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </div>
+    );
+};

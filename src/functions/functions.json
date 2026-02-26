@@ -1,0 +1,200 @@
+{
+    "allowCustomDataForDataTypeAny": true,
+    "functions": [
+        {
+            "id": "NORMAL",
+            "name": "NORMAL",
+            "description": "Normal distribution. Returns mean when not simulating.",
+            "parameters": [
+                {
+                    "name": "mean",
+                    "description": "Mean (μ)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "stdev",
+                    "description": "Standard deviation (σ)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Optional input name",
+                    "type": "string",
+                    "dimensionality": "scalar",
+                    "optional": true
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "UNIFORM",
+            "name": "UNIFORM",
+            "description": "Uniform distribution. Returns midpoint when not simulating.",
+            "parameters": [
+                {
+                    "name": "min",
+                    "description": "Minimum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "max",
+                    "description": "Maximum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Optional input name",
+                    "type": "string",
+                    "dimensionality": "scalar",
+                    "optional": true
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "TRIANGULAR",
+            "name": "TRIANGULAR",
+            "description": "Triangular distribution. Returns mode when not simulating.",
+            "parameters": [
+                {
+                    "name": "min",
+                    "description": "Minimum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "mode",
+                    "description": "Most likely value (mode)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "max",
+                    "description": "Maximum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Optional input name",
+                    "type": "string",
+                    "dimensionality": "scalar",
+                    "optional": true
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "PERT",
+            "name": "PERT",
+            "description": "PERT distribution (Beta-shaped). Returns weighted mean when not simulating.",
+            "parameters": [
+                {
+                    "name": "min",
+                    "description": "Minimum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "mode",
+                    "description": "Most likely value (mode)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "max",
+                    "description": "Maximum value",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Optional input name",
+                    "type": "string",
+                    "dimensionality": "scalar",
+                    "optional": true
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "LOGNORMAL",
+            "name": "LOGNORMAL",
+            "description": "Lognormal distribution. Returns E[X] when not simulating.",
+            "parameters": [
+                {
+                    "name": "mu",
+                    "description": "Mean of underlying normal (μ)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "sigma",
+                    "description": "Stdev of underlying normal (σ)",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Optional input name",
+                    "type": "string",
+                    "dimensionality": "scalar",
+                    "optional": true
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "OUTPUT",
+            "name": "OUTPUT",
+            "description": "Marks a cell as a simulation output. Pass-through: returns the value as-is.",
+            "parameters": [
+                {
+                    "name": "value",
+                    "description": "Cell value to track",
+                    "type": "number",
+                    "dimensionality": "scalar"
+                },
+                {
+                    "name": "name",
+                    "description": "Output name for reports",
+                    "type": "string",
+                    "dimensionality": "scalar"
+                }
+            ],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        },
+        {
+            "id": "SIMID",
+            "name": "SIMID",
+            "description": "Returns the current simulation iteration number (0 when idle).",
+            "parameters": [],
+            "result": {
+                "type": "number",
+                "dimensionality": "scalar"
+            }
+        }
+    ]
+}
