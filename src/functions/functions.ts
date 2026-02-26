@@ -137,6 +137,8 @@ function mcSimId(): number {
 // Exported so it can be called from Office.onReady() in the shared runtime.
 
 export function initCustomFunctions(): void {
+    console.log("[MC] initCustomFunctions called");
+    console.log("[MC] typeof CustomFunctions =", typeof CustomFunctions);
     try {
         CustomFunctions.associate("NORMAL", mcNormal);
         CustomFunctions.associate("UNIFORM", mcUniform);
@@ -145,7 +147,8 @@ export function initCustomFunctions(): void {
         CustomFunctions.associate("LOGNORMAL", mcLognormal);
         CustomFunctions.associate("OUTPUT", mcOutput);
         CustomFunctions.associate("SIMID", mcSimId);
+        console.log("[MC] ✅ All 7 functions registered successfully");
     } catch (e) {
-        console.warn("CustomFunctions.associate failed:", e);
+        console.error("[MC] ❌ CustomFunctions.associate failed:", e);
     }
 }
