@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/custom-functions-runtime": "^1.6.11",
     "@types/d3": "^7.4.3",
     "@types/office-js": "^1.0.395",
     "@types/react": "^18.2.0",

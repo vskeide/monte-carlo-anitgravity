@@ -28,26 +28,29 @@ import {
 } from "../engine/distributions";
 import { DistributionType } from "../engine/types";
 
-// ── Helper: generate a stable ID from address context ───────────
+// ── Helper: stable ID from name or params ───────────────────────
 
-let _callCounter = 0;
+let _anonCounter = 0;
 
-function nextId(prefix: string): string {
-    return `${prefix}_${++_callCounter}`;
+function stableId(type: string, name: string | undefined, address: string): string {
+    if (name) return `${type}:${name}`;
+    if (address) return `${type}:${address}`;
+    return `${type}_anon_${++_anonCounter}`;
 }
 
 function registerDist(
     type: DistributionType,
     params: Record<string, number | number[]>,
-    name?: string
+    name: string | undefined,
+    cellAddress: string
 ): void {
-    const id = nextId(type);
+    const id = stableId(type, name, cellAddress);
     registerInput({
         id,
-        cellAddress: "", // Populated at runtime when possible
+        cellAddress,
         type,
         params,
-        name: name || `${type}_${id}`,
+        name: name || id,
     });
 }
 
@@ -56,9 +59,10 @@ function registerDist(
 function mcNormal(
     mean: number,
     stdev: number,
-    name?: string
+    name: string | undefined,
+    invocation: any
 ): number {
-    registerDist("normal", { mean, stdev }, name);
+    registerDist("normal", { mean, stdev }, name, invocation.address || "");
     if (isSimulating()) return sampleNormal(mean, stdev);
     return staticNormal(mean, stdev);
 }
@@ -68,9 +72,10 @@ function mcNormal(
 function mcUniform(
     min: number,
     max: number,
-    name?: string
+    name: string | undefined,
+    invocation: any
 ): number {
-    registerDist("uniform", { min, max }, name);
+    registerDist("uniform", { min, max }, name, invocation.address || "");
     if (isSimulating()) return sampleUniform(min, max);
     return staticUniform(min, max);
 }
@@ -81,9 +86,10 @@ function mcTriangular(
     min: number,
     mode: number,
     max: number,
-    name?: string
+    name: string | undefined,
+    invocation: any
 ): number {
-    registerDist("triangular", { min, mode, max }, name);
+    registerDist("triangular", { min, mode, max }, name, invocation.address || "");
     if (isSimulating()) return sampleTriangular(min, mode, max);
     return staticTriangular(min, mode, max);
 }
@@ -94,9 +100,10 @@ function mcPERT(
     min: number,
     mode: number,
     max: number,
-    name?: string
+    name: string | undefined,
+    invocation: any
 ): number {
-    registerDist("pert", { min, mode, max }, name);
+    registerDist("pert", { min, mode, max }, name, invocation.address || "");
     if (isSimulating()) return samplePERT(min, mode, max);
     return staticPERT(min, mode, max);
 }
@@ -106,9 +113,10 @@ function mcPERT(
 function mcLognormal(
     mu: number,
     sigma: number,
-    name?: string
+    name: string | undefined,
+    invocation: any
 ): number {
-    registerDist("lognormal", { mu, sigma }, name);
+    registerDist("lognormal", { mu, sigma }, name, invocation.address || "");
     if (isSimulating()) return sampleLognormal(mu, sigma);
     return staticLognormal(mu, sigma);
 }
@@ -116,12 +124,13 @@ function mcLognormal(
 // ── MC.OUTPUT ───────────────────────────────────────────────────
 // Pass-through that marks a cell as a simulation output.
 
-function mcOutput(value: number, name: string): number {
-    const id = nextId("output");
+function mcOutput(value: number, name: string, invocation: any): number {
+    const address = invocation.address || "";
+    const id = stableId("output", name, address);
     registerOutput({
         id,
-        cellAddress: "",  // Populated contextually
-        name: name || `Output_${id}`,
+        cellAddress: address,
+        name: name || id,
     });
     return value;
 }

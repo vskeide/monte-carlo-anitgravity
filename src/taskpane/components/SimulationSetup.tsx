@@ -1,8 +1,4 @@
-/* ---------------------------------------------------------------
- * SimulationSetup.tsx — Setup panel: config, inputs/outputs, run
- * --------------------------------------------------------------- */
-
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     Button,
     Slider,
@@ -20,6 +16,8 @@ import {
 import {
     SimulationConfig,
     SimulationProgress,
+    DistributionInput,
+    SimulationOutput,
 } from "../../engine/types";
 import { getInputs, getOutputs } from "../../shared/storage";
 import { MIN_ITERATIONS, MAX_ITERATIONS, formatNumber } from "../../shared/constants";
@@ -41,8 +39,18 @@ export const SimulationSetup: React.FC<Props> = ({
     onCancel,
     isRunning,
 }) => {
-    const inputs = getInputs();
-    const outputs = getOutputs();
+    const [inputs, setInputs] = useState<DistributionInput[]>(getInputs());
+    const [outputs, setOutputs] = useState<SimulationOutput[]>(getOutputs());
+
+    // Poll for new inputs/outputs every 2 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setInputs(getInputs());
+            setOutputs(getOutputs());
+        }, 2000);
+        return () => clearInterval(interval);
+    }, []);
+
     const pct = progress
         ? Math.round((progress.currentIteration / progress.totalIterations) * 100)
         : 0;
