@@ -33,7 +33,7 @@
         <AllFormFactors>
           <ExtensionPoint xsi:type="CustomFunctions">
             <Script>
-              <SourceLocation resid="Functions.Script.Url"/>
+              <SourceLocation resid="Functions.Page.Url"/>
             </Script>
             <Page>
               <SourceLocation resid="Functions.Page.Url"/>
