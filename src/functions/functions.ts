@@ -134,14 +134,18 @@ function mcSimId(): number {
 }
 
 // ── Register with Excel ─────────────────────────────────────────
-// IMPORTANT: CustomFunctions.associate must be called at the top level,
-// NOT inside Office.onReady(). The CF runtime needs these registered
-// immediately or cells show #BUSY!.
+// Exported so it can be called from Office.onReady() in the shared runtime.
 
-CustomFunctions.associate("NORMAL", mcNormal);
-CustomFunctions.associate("UNIFORM", mcUniform);
-CustomFunctions.associate("TRIANGULAR", mcTriangular);
-CustomFunctions.associate("PERT", mcPERT);
-CustomFunctions.associate("LOGNORMAL", mcLognormal);
-CustomFunctions.associate("OUTPUT", mcOutput);
-CustomFunctions.associate("SIMID", mcSimId);
+export function initCustomFunctions(): void {
+    try {
+        CustomFunctions.associate("NORMAL", mcNormal);
+        CustomFunctions.associate("UNIFORM", mcUniform);
+        CustomFunctions.associate("TRIANGULAR", mcTriangular);
+        CustomFunctions.associate("PERT", mcPERT);
+        CustomFunctions.associate("LOGNORMAL", mcLognormal);
+        CustomFunctions.associate("OUTPUT", mcOutput);
+        CustomFunctions.associate("SIMID", mcSimId);
+    } catch (e) {
+        console.warn("CustomFunctions.associate failed:", e);
+    }
+}

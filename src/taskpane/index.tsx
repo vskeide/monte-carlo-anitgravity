@@ -1,5 +1,10 @@
 /* ---------------------------------------------------------------
- * index.tsx — Task pane entry point
+ * index.tsx — Task pane entry point (shared runtime)
+ *
+ * In shared runtime mode, this single HTML page hosts:
+ *   - The React task pane UI
+ *   - Custom Functions (MC.Normal, MC.PERT, etc.)
+ *   - Ribbon command handlers
  * --------------------------------------------------------------- */
 
 /* global Office */
@@ -9,14 +14,19 @@ import { createRoot } from "react-dom/client";
 import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { App } from "./App";
 import { restoreFromStorage } from "../shared/storage";
+import { initCustomFunctions } from "../functions/functions";
+import { initCommands } from "../commands/commands";
 import "./styles.css";
 
-// ── Shared Runtime: load custom functions & commands in this context ──
-import "../functions/functions";   // registers CustomFunctions.associate
-import "../commands/commands";     // registers Office.actions.associate
-
 Office.onReady(() => {
+    // 1. Register custom functions and ribbon commands
+    initCustomFunctions();
+    initCommands();
+
+    // 2. Restore any persisted state
     restoreFromStorage();
+
+    // 3. Mount the React UI
     const container = document.getElementById("root");
     if (container) {
         const root = createRoot(container);
