@@ -57,12 +57,8 @@ function registerDist(
 
 // ── MC.NORMAL ───────────────────────────────────────────────────
 
-function mcNormal(
-    mean: number,
-    stdev: number,
-    name: string | undefined,
-    invocation: any
-): number {
+function mcNormal(mean: number, stdev: number, name?: string): number {
+    const invocation = arguments[arguments.length - 1];
     registerDist("normal", { mean, stdev }, name, invocation.address || "");
     if (isSimulating()) return sampleNormal(mean, stdev);
     return staticNormal(mean, stdev);
@@ -70,12 +66,8 @@ function mcNormal(
 
 // ── MC.UNIFORM ──────────────────────────────────────────────────
 
-function mcUniform(
-    min: number,
-    max: number,
-    name: string | undefined,
-    invocation: any
-): number {
+function mcUniform(min: number, max: number, name?: string): number {
+    const invocation = arguments[arguments.length - 1];
     registerDist("uniform", { min, max }, name, invocation.address || "");
     if (isSimulating()) return sampleUniform(min, max);
     return staticUniform(min, max);
@@ -83,13 +75,8 @@ function mcUniform(
 
 // ── MC.TRIANGULAR ───────────────────────────────────────────────
 
-function mcTriangular(
-    min: number,
-    mode: number,
-    max: number,
-    name: string | undefined,
-    invocation: any
-): number {
+function mcTriangular(min: number, mode: number, max: number, name?: string): number {
+    const invocation = arguments[arguments.length - 1];
     registerDist("triangular", { min, mode, max }, name, invocation.address || "");
     if (isSimulating()) return sampleTriangular(min, mode, max);
     return staticTriangular(min, mode, max);
@@ -97,13 +84,8 @@ function mcTriangular(
 
 // ── MC.PERT ─────────────────────────────────────────────────────
 
-function mcPERT(
-    min: number,
-    mode: number,
-    max: number,
-    name: string | undefined,
-    invocation: any
-): number {
+function mcPERT(min: number, mode: number, max: number, name?: string): number {
+    const invocation = arguments[arguments.length - 1];
     registerDist("pert", { min, mode, max }, name, invocation.address || "");
     if (isSimulating()) return samplePERT(min, mode, max);
     return staticPERT(min, mode, max);
@@ -111,12 +93,8 @@ function mcPERT(
 
 // ── MC.LOGNORMAL ────────────────────────────────────────────────
 
-function mcLognormal(
-    mu: number,
-    sigma: number,
-    name: string | undefined,
-    invocation: any
-): number {
+function mcLognormal(mu: number, sigma: number, name?: string): number {
+    const invocation = arguments[arguments.length - 1];
     registerDist("lognormal", { mu, sigma }, name, invocation.address || "");
     if (isSimulating()) return sampleLognormal(mu, sigma);
     return staticLognormal(mu, sigma);
@@ -125,7 +103,8 @@ function mcLognormal(
 // ── MC.OUTPUT ───────────────────────────────────────────────────
 // Pass-through that marks a cell as a simulation output.
 
-function mcOutput(value: number, name: string, invocation: any): number {
+function mcOutput(value: number, name: string): number {
+    const invocation = arguments[arguments.length - 1];
     const address = invocation.address || "";
     console.log(`[MC] mcOutput: name=${name}, rawAddress=${address}`);
     const id = stableId("output", name, address);

@@ -170,6 +170,9 @@ export async function runSimulation(
                 await ctx.sync();
             }
         });
+    } catch (error) {
+        console.error("[MC] Simulation failed in runSimulation inside Excel.run:", error);
+        throw error; // Re-throw so useSimulation hook can catch and display it
     } finally {
         setSimulating(false);
     }
