@@ -13,7 +13,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { App } from "./App";
-import { restoreFromStorage } from "../shared/storage";
+import { clearAll } from "../shared/storage";
 import { initCustomFunctions } from "../functions/functions";
 import { initCommands } from "../commands/commands";
 import "./styles.css";
@@ -27,12 +27,12 @@ function mountApp(): void {
 
     console.log("[MC] Mounting app...");
 
+    // Clear stale state from previous sessions
+    clearAll();
+
     // Register custom functions and commands
     initCustomFunctions();
     initCommands();
-
-    // Restore persisted state
-    restoreFromStorage();
 
     // Mount React UI
     const container = document.getElementById("root");

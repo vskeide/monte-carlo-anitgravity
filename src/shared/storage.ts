@@ -1,10 +1,11 @@
 /* ---------------------------------------------------------------
  * storage.ts — Cross-runtime shared state
  *
- * Office-JS custom functions and the task pane run in separate
- * JS runtimes.  We use a simple in-memory registry that's shared
- * when both runtimes coincide (shared runtime mode) or falls back
- * to localStorage for persistence.
+ * In shared runtime mode both custom functions and the task pane
+ * share one JS context.  We use plain in-memory Maps — no
+ * localStorage.  Functions re-register themselves each time Excel
+ * evaluates them, so the Maps always reflect the *current*
+ * workbook's MC functions.
  * --------------------------------------------------------------- */
 
 import { DistributionInput, SimulationOutput } from "../engine/types";
@@ -19,7 +20,6 @@ let _currentIteration = 0;
 
 export function registerInput(input: DistributionInput): void {
     _inputs.set(input.id, input);
-    persistToStorage();
 }
 
 export function getInputs(): DistributionInput[] {
@@ -32,19 +32,16 @@ export function getInput(id: string): DistributionInput | undefined {
 
 export function clearInputs(): void {
     _inputs.clear();
-    persistToStorage();
 }
 
 export function removeInput(id: string): void {
     _inputs.delete(id);
-    persistToStorage();
 }
 
 // ── Output cells ────────────────────────────────────────────────
 
 export function registerOutput(output: SimulationOutput): void {
     _outputs.set(output.id, output);
-    persistToStorage();
 }
 
 export function getOutputs(): SimulationOutput[] {
@@ -53,7 +50,17 @@ export function getOutputs(): SimulationOutput[] {
 
 export function clearOutputs(): void {
     _outputs.clear();
-    persistToStorage();
+}
+
+// ── Clear everything (used on add-in startup) ───────────────────
+
+export function clearAll(): void {
+    _inputs.clear();
+    _outputs.clear();
+    _simulating = false;
+    _currentIteration = 0;
+    // Also wipe any leftover localStorage from older builds
+    try { localStorage.removeItem("mc_registry"); } catch { /* noop */ }
 }
 
 // ── Simulation state ────────────────────────────────────────────
@@ -74,36 +81,3 @@ export function setCurrentIteration(iter: number): void {
     _currentIteration = iter;
 }
 
-// ── LocalStorage persistence (fallback for split runtimes) ──────
-
-function persistToStorage(): void {
-    try {
-        const data = {
-            inputs: Array.from(_inputs.entries()),
-            outputs: Array.from(_outputs.entries()),
-        };
-        localStorage.setItem("mc_registry", JSON.stringify(data));
-    } catch {
-        // localStorage may not be available in all contexts
-    }
-}
-
-export function restoreFromStorage(): void {
-    try {
-        const raw = localStorage.getItem("mc_registry");
-        if (!raw) return;
-        const data = JSON.parse(raw);
-        if (data.inputs) {
-            for (const [k, v] of data.inputs) {
-                _inputs.set(k, v as DistributionInput);
-            }
-        }
-        if (data.outputs) {
-            for (const [k, v] of data.outputs) {
-                _outputs.set(k, v as SimulationOutput);
-            }
-        }
-    } catch {
-        // Silently ignore
-    }
-}
