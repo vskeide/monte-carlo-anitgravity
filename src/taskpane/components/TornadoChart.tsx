@@ -82,11 +82,11 @@ export const TornadoChart: React.FC<Props> = ({
             .attr("class", "tornado-label")
             .attr("x", (d) =>
                 d.coefficient >= 0
-                    ? x(d.coefficient) + 5
-                    : x(d.coefficient) - 5
+                    ? x(d.coefficient) + 6
+                    : x(0) + 6  // Place negative values to the RIGHT of the zero line
             )
             .attr("y", (d) => y(d.inputName)! + y.bandwidth() / 2 + 4)
-            .attr("text-anchor", (d) => (d.coefficient >= 0 ? "start" : "end"))
+            .attr("text-anchor", "start")
             .attr("fill", COLORS.axisText)
             .attr("font-size", 10)
             .attr("font-weight", 500)
