@@ -1,0 +1,290 @@
+<h1>Monte Carlo Simulation — Excel Add-in Guide</h1>
+<h2>1. Getting Started</h2>
+<h3>Installation</h3>
+<ol>
+<li>Open Excel → <strong>Insert</strong> → <strong>Office Add-ins</strong> → <strong>Upload My Add-in</strong></li>
+<li>Select <code>manifest.xml</code> from this project</li>
+<li>The <strong>Monte Carlo Sim</strong> task pane opens on the right</li>
+</ol>
+<h3>Quick Test</h3>
+<p>Enter this simple DCF model in a worksheet:</p>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Label</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A1</td>
+<td>Base Revenue</td>
+<td><code>1000000</code></td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Revenue Growth</td>
+<td><code>=MC.PERT(0.04, 0.08, 0.14, &quot;Revenue Growth&quot;)</code></td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Operating Margin</td>
+<td><code>=MC.TRIANGULAR(0.18, 0.25, 0.32, &quot;Op Margin&quot;)</code></td>
+</tr>
+<tr>
+<td>B4</td>
+<td>WACC</td>
+<td><code>=MC.NORMAL(0.10, 0.015, &quot;WACC&quot;)</code></td>
+</tr>
+<tr>
+<td>B5</td>
+<td>Terminal Growth</td>
+<td><code>=MC.UNIFORM(0.01, 0.03, &quot;Terminal Growth&quot;)</code></td>
+</tr>
+<tr>
+<td>B8</td>
+<td>Year 5 Revenue</td>
+<td><code>=A1*(1+B2)^5</code></td>
+</tr>
+<tr>
+<td>B9</td>
+<td>Year 5 EBIT</td>
+<td><code>=B8*B3</code></td>
+</tr>
+<tr>
+<td>B10</td>
+<td>Terminal Value</td>
+<td><code>=B9*(1+B5)/(B4-B5)</code></td>
+</tr>
+<tr>
+<td>B11</td>
+<td>PV of Terminal</td>
+<td><code>=B10/(1+B4)^5</code></td>
+</tr>
+<tr>
+<td>B12</td>
+<td>Enterprise Value</td>
+<td><code>=MC.OUTPUT(B11, &quot;EV&quot;)</code></td>
+</tr>
+</tbody></table>
+<p>Click <strong>▶ Run Simulation</strong> in the task pane.</p>
+<hr>
+<h2>2. Distribution Functions</h2>
+<p>All functions live in the <code>MC</code> namespace. When <strong>not</strong> simulating, they return a deterministic &quot;expected&quot; value so your spreadsheet stays stable.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Static Return</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>MC.PERT(min, mode, max, [name])</code></td>
+<td><code>(min + 4×mode + max) / 6</code></td>
+<td>Beta-shaped distribution, good for expert estimates</td>
+</tr>
+<tr>
+<td><code>MC.TRIANGULAR(min, mode, max, [name])</code></td>
+<td>mode</td>
+<td>Simple 3-point estimate</td>
+</tr>
+<tr>
+<td><code>MC.NORMAL(mean, stdev, [name])</code></td>
+<td>mean</td>
+<td>Gaussian bell curve</td>
+</tr>
+<tr>
+<td><code>MC.UNIFORM(min, max, [name])</code></td>
+<td><code>(min + max) / 2</code></td>
+<td>Equal probability across range</td>
+</tr>
+<tr>
+<td><code>MC.LOGNORMAL(mu, sigma, [name])</code></td>
+<td><code>e^(mu + σ²/2)</code></td>
+<td>Positively skewed, always &gt; 0</td>
+</tr>
+<tr>
+<td><code>MC.OUTPUT(value, name)</code></td>
+<td>pass-through</td>
+<td>Marks a cell as a simulation output</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Tip</strong>: Always provide a descriptive <code>name</code> parameter — it appears in charts and reports.</p>
+</blockquote>
+<hr>
+<h2>3. Simulation Settings</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Iterations</strong></td>
+<td>Number of Monte Carlo trials (default 1,000). More = smoother results but slower. 5,000–10,000 is typical for production.</td>
+</tr>
+<tr>
+<td><strong>Seed</strong></td>
+<td>Controls randomness. <code>0</code> = fully random (different results each run). Any positive number = reproducible results (same seed → same output).</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Interpreting Results</h2>
+<h3>4.1 Summary Header</h3>
+<p>The colored header at the top shows three key metrics:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mean</strong></td>
+<td>Average outcome across all iterations. Your &quot;expected&quot; enterprise value.</td>
+</tr>
+<tr>
+<td><strong>Std Dev</strong></td>
+<td>How spread out results are. Higher = more uncertainty in your valuation.</td>
+</tr>
+<tr>
+<td><strong>P(X &lt; 0)</strong></td>
+<td>Percentage of iterations where the output was <strong>negative</strong>. This is NOT related to the seed setting — it measures downside risk.</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong>: Mean = 3.14M, Std Dev = 1.09M, P(X &lt; 0) = 0.0%
+→ &quot;The expected EV is $3.14M with $1.09M uncertainty. No scenario produced a negative EV.&quot;</p>
+<blockquote>
+<p><strong>When P(X &lt; 0) matters</strong>: For NPV analysis of risky projects, P(X &lt; 0) tells you the probability the project destroys value. A P(X &lt; 0) of 15% means 15% of scenarios show the project is not worth doing.</p>
+</blockquote>
+<h3>4.2 Histogram</h3>
+<p>The bar chart shows the <strong>frequency distribution</strong> of outcomes:</p>
+<ul>
+<li><strong>X-axis</strong>: Output values (e.g. Enterprise Value in millions)</li>
+<li><strong>Y-axis</strong>: Percentage of iterations that fell in each bin</li>
+<li><strong>Dashed orange lines</strong>: 5th, 50th (median), and 95th percentiles</li>
+</ul>
+<p><strong>How to read it</strong>:</p>
+<ul>
+<li>The <strong>tallest bars</strong> show the most likely outcomes</li>
+<li>A <strong>right-skewed</strong> shape (long tail to the right) is typical for DCF models — upside scenarios can be very large</li>
+<li>The <strong>5th–95th percentile range</strong> gives you a 90% confidence interval</li>
+</ul>
+<p><strong>Example</strong>: If the 5th percentile = $1.83M and 95th = $5.08M, you can say: <em>&quot;There&#39;s a 90% probability the EV falls between $1.83M and $5.08M.&quot;</em></p>
+<h3>4.3 Cumulative Distribution (CDF)</h3>
+<p>The S-curve shows the <strong>probability of the output being ≤ a given value</strong>:</p>
+<ul>
+<li><strong>X-axis</strong>: Output values</li>
+<li><strong>Y-axis</strong>: Cumulative probability (0% to 100%)</li>
+<li><strong>Orange dots</strong>: 5th, 50th, 95th percentile markers</li>
+</ul>
+<p><strong>How to read it</strong>:</p>
+<ul>
+<li>Find a value on the X-axis → read up to the curve → the Y-axis tells you the probability of being at or below that value</li>
+<li>The <strong>steeper</strong> the curve, the more <strong>concentrated</strong> (certain) the outcomes</li>
+<li>A <strong>flat, gradual</strong> curve means high uncertainty</li>
+</ul>
+<p><strong>Example</strong>: If the curve hits 50% at $2.93M → <em>&quot;There&#39;s a 50/50 chance the EV is above or below $2.93M.&quot;</em></p>
+<h3>4.4 Statistics Table</h3>
+<table>
+<thead>
+<tr>
+<th>Statistic</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Iterations</strong></td>
+<td>Total trials run</td>
+</tr>
+<tr>
+<td><strong>Minimum</strong></td>
+<td>Worst-case scenario observed</td>
+</tr>
+<tr>
+<td><strong>Maximum</strong></td>
+<td>Best-case scenario observed</td>
+</tr>
+<tr>
+<td><strong>Mean</strong></td>
+<td>Average outcome</td>
+</tr>
+<tr>
+<td><strong>Median</strong></td>
+<td>Middle value (50th percentile) — more robust than mean for skewed data</td>
+</tr>
+<tr>
+<td><strong>Mode</strong></td>
+<td>Most frequently occurring value</td>
+</tr>
+<tr>
+<td><strong>Std Deviation</strong></td>
+<td>Spread of outcomes. ~68% of results fall within ±1 std dev of the mean</td>
+</tr>
+<tr>
+<td><strong>Skewness</strong></td>
+<td>Shape asymmetry. &gt;0 = right-skewed (long right tail), &lt;0 = left-skewed</td>
+</tr>
+<tr>
+<td><strong>Kurtosis</strong></td>
+<td>Tail heaviness. &gt;3 = fat tails (extreme outcomes more likely than normal)</td>
+</tr>
+<tr>
+<td><strong>P5 / P25 / P75 / P95</strong></td>
+<td>Percentiles for building confidence intervals</td>
+</tr>
+</tbody></table>
+<h3>4.5 Sensitivity Analysis (Tornado Chart)</h3>
+<p>The tornado chart answers: <strong>&quot;Which inputs matter most?&quot;</strong></p>
+<ul>
+<li>Bars are sorted by impact (largest at top)</li>
+<li><strong>Bar length</strong> = Standardized Regression Coefficient (SRC), showing how much each input drives output variation</li>
+<li><strong>Blue bars (positive SRC)</strong>: Higher input → higher output</li>
+<li><strong>Red bars (negative SRC)</strong>: Higher input → lower output (e.g. higher WACC → lower EV)</li>
+</ul>
+<p><strong>How to read the values</strong>:</p>
+<ul>
+<li>SRC of <strong>0.82</strong> for WACC means WACC explains roughly 82% of the output&#39;s variation</li>
+<li>SRC of <strong>0.27</strong> for Revenue Growth means it contributes ~27%</li>
+<li>The <strong>sign</strong> tells you the direction: negative means inverse relationship</li>
+</ul>
+<p><strong>Practical use</strong>: Focus your research and negotiation on the inputs with the longest bars — those are where uncertainty matters most.</p>
+<h3>4.6 Regression Coefficients Table</h3>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SRC</strong></td>
+<td>Standardized Regression Coefficient — linear correlation strength</td>
+</tr>
+<tr>
+<td><strong>Rank ρ</strong></td>
+<td>Spearman rank correlation — captures non-linear relationships too</td>
+</tr>
+</tbody></table>
+<p>If SRC and Rank ρ differ significantly, the relationship is non-linear.</p>
+<hr>
+<h2>5. Export</h2>
+<p>The <strong>Export</strong> tab writes all simulation results to a new worksheet in your workbook:</p>
+<ul>
+<li>Raw iteration data (all input samples + output values)</li>
+<li>Summary statistics</li>
+<li>Useful for further analysis in Excel or importing into other tools</li>
+</ul>
+<hr>
+<h2>6. Tips &amp; Best Practices</h2>
+<ol>
+<li><strong>Start with 1,000 iterations</strong> for quick testing, then increase to 5,000–10,000 for final analysis</li>
+<li><strong>Use a seed</strong> (e.g. 42) when presenting results — it makes them reproducible</li>
+<li><strong>Name all your inputs</strong> — unnamed inputs show as cryptic IDs in charts</li>
+<li><strong>Check P(X &lt; 0)</strong> for any go/no-go investment decision</li>
+<li><strong>Focus on median</strong> over mean for skewed distributions — it&#39;s more representative</li>
+<li><strong>Use the tornado chart</strong> to identify which assumptions need the most research</li>
+</ol>

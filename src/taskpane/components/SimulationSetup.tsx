@@ -21,6 +21,24 @@ import {
 } from "../../engine/types";
 import { getInputs, getOutputs } from "../../shared/storage";
 import { MIN_ITERATIONS, MAX_ITERATIONS, formatNumber } from "../../shared/constants";
+import { MiniDistChart } from "./MiniDistChart";
+
+// Format distribution params as a short annotation
+function paramLabel(type: string, params: Record<string, number | number[]>): string {
+    const p = (k: string) => {
+        const v = params[k];
+        const n = typeof v === "number" ? v : (v as number[])?.[0] ?? 0;
+        return Number.isInteger(n) ? String(n) : n.toFixed(n < 1 ? 3 : 2);
+    };
+    switch (type) {
+        case "normal": return `μ=${p("mean")}, σ=${p("stdev")}`;
+        case "triangular": return `${p("min")} – ${p("mode")} – ${p("max")}`;
+        case "pert": return `${p("min")} – ${p("mode")} – ${p("max")}`;
+        case "uniform": return `${p("min")} – ${p("max")}`;
+        case "lognormal": return `μ=${p("mu")}, σ=${p("sigma")}`;
+        default: return "";
+    }
+}
 
 interface Props {
     config: SimulationConfig;
@@ -173,8 +191,12 @@ export const SimulationSetup: React.FC<Props> = ({
                 ) : (
                     <ul className="dist-list">
                         {inputs.map((inp) => (
-                            <li key={inp.id} className="dist-item">
-                                <span>{inp.name}</span>
+                            <li key={inp.id} className="dist-item-expanded">
+                                <div className="dist-item-info">
+                                    <span className="dist-item-name">{inp.name}</span>
+                                    <span className="dist-item-params">{paramLabel(inp.type, inp.params)}</span>
+                                </div>
+                                <MiniDistChart type={inp.type} params={inp.params} width={90} height={30} />
                                 <span className="dist-badge">{inp.type}</span>
                             </li>
                         ))}

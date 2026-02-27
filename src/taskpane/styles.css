@@ -4,13 +4,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-html, body, #root {
+html,
+body,
+#root {
     height: 100%;
     font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
     font-size: 13px;
@@ -24,13 +28,16 @@ html, body, #root {
     width: 6px;
     height: 6px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #c4c6cf;
     border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: #9ca0ab;
 }
@@ -78,7 +85,7 @@ html, body, #root {
     border-radius: 10px;
     padding: 16px;
     margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .card-header {
@@ -136,6 +143,37 @@ html, body, #root {
     font-size: 12px;
 }
 
+.dist-item-expanded {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+}
+
+.dist-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.dist-item-name {
+    font-weight: 500;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dist-item-params {
+    font-size: 10px;
+    color: #9ca3af;
+    font-variant-numeric: tabular-nums;
+}
+
 .dist-badge {
     display: inline-flex;
     align-items: center;
@@ -147,6 +185,7 @@ html, body, #root {
     border-radius: 4px;
     background: #eef2ff;
     color: #4f46e5;
+    flex-shrink: 0;
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */
@@ -199,10 +238,35 @@ html, body, #root {
 }
 
 /* ── Utility ─────────────────────────────────────────────────── */
-.muted { color: #9ca3af; }
-.mono { font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 11px; }
-.flex-row { display: flex; align-items: center; gap: 8px; }
-.flex-between { display: flex; align-items: center; justify-content: space-between; }
-.mt-8 { margin-top: 8px; }
-.mt-12 { margin-top: 12px; }
-.mb-8 { margin-bottom: 8px; }
+.muted {
+    color: #9ca3af;
+}
+
+.mono {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 11px;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mt-8 {
+    margin-top: 8px;
+}
+
+.mt-12 {
+    margin-top: 12px;
+}
+
+.mb-8 {
+    margin-bottom: 8px;
+}
