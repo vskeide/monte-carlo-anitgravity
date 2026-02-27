@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
     Button,
-    Slider,
     Input,
     Label,
     MessageBar,
@@ -79,40 +78,55 @@ export const SimulationSetup: React.FC<Props> = ({
             <div className="card">
                 <div className="card-header">Simulation Settings</div>
 
-                <Label htmlFor="iter-slider" style={{ fontSize: 12 }}>
-                    Iterations: <strong>{config.iterations.toLocaleString()}</strong>
-                </Label>
-                <Slider
-                    id="iter-slider"
-                    min={MIN_ITERATIONS}
-                    max={MAX_ITERATIONS}
-                    step={100}
-                    value={config.iterations}
-                    onChange={(_, d) =>
-                        onConfigChange({ ...config, iterations: d.value })
-                    }
-                    disabled={isRunning}
-                    style={{ marginBottom: 10 }}
-                />
-
-                <div className="flex-row" style={{ marginBottom: 10 }}>
-                    <Label htmlFor="seed-input" style={{ fontSize: 12 }}>
-                        Seed (0 = random):
-                    </Label>
-                    <Input
-                        id="seed-input"
-                        type="number"
-                        size="small"
-                        value={String(config.seed)}
-                        onChange={(_, d) =>
-                            onConfigChange({
-                                ...config,
-                                seed: parseInt(d.value) || 0,
-                            })
-                        }
-                        disabled={isRunning}
-                        style={{ width: 80 }}
-                    />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 10 }}>
+                    <div>
+                        <Label htmlFor="iter-input" style={{ fontSize: 11, display: "block", marginBottom: 3 }}>
+                            Iterations
+                        </Label>
+                        <input
+                            id="iter-input"
+                            type="number"
+                            min={100}
+                            max={50000}
+                            step={100}
+                            value={config.iterations}
+                            onChange={(e) => {
+                                const v = Math.max(100, Math.min(50000, parseInt(e.target.value) || 1000));
+                                onConfigChange({ ...config, iterations: v });
+                            }}
+                            disabled={isRunning}
+                            style={{ width: "100%", padding: "5px 8px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 12 }}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="seed-input" style={{ fontSize: 11, display: "block", marginBottom: 3 }}>
+                            Seed (0=random)
+                        </Label>
+                        <input
+                            id="seed-input"
+                            type="number"
+                            min={0}
+                            step={1}
+                            value={config.seed}
+                            onChange={(e) => onConfigChange({ ...config, seed: parseInt(e.target.value) || 0 })}
+                            disabled={isRunning}
+                            style={{ width: "100%", padding: "5px 8px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 12 }}
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="threshold-input" style={{ fontSize: 11, display: "block", marginBottom: 3 }}>
+                            P(X &lt; ?)
+                        </Label>
+                        <input
+                            id="threshold-input"
+                            type="number"
+                            step="any"
+                            value={config.probabilityThreshold}
+                            onChange={(e) => onConfigChange({ ...config, probabilityThreshold: parseFloat(e.target.value) || 0 })}
+                            disabled={isRunning}
+                            style={{ width: "100%", padding: "5px 8px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 12 }}
+                        />
+                    </div>
                 </div>
 
                 <div className="flex-row">

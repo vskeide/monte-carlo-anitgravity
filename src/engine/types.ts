@@ -43,6 +43,8 @@ export interface SimulationConfig {
     seed: number;
     /** Confidence level for intervals (e.g. 0.90) */
     confidenceLevel: number;
+    /** Threshold for P(X < threshold) metric (default: 0) */
+    probabilityThreshold: number;
 }
 
 /** Results for a single output across all iterations */

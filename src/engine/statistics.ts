@@ -8,7 +8,8 @@ import { OutputStatistics } from "./types";
 /** Compute full statistics for an array of simulation output values */
 export function computeStatistics(
     values: number[],
-    confidenceLevel = 0.9
+    confidenceLevel = 0.9,
+    threshold = 0
 ): OutputStatistics {
     const n = values.length;
     if (n === 0) {
@@ -76,10 +77,10 @@ export function computeStatistics(
         percentile(sorted, 1 - alpha),
     ];
 
-    // Probability of negative outcome
+    // Probability of outcome below threshold
     let negCount = 0;
     for (let i = 0; i < n; i++) {
-        if (values[i] < 0) negCount++;
+        if (values[i] < threshold) negCount++;
     }
     const probNegative = negCount / n;
 

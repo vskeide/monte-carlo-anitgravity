@@ -207,7 +207,7 @@ export async function runSimulation(
         name: out.name,
         cellAddress: out.cellAddress,
         values: outputValues[idx],
-        stats: computeStatistics(outputValues[idx], config.confidenceLevel),
+        stats: computeStatistics(outputValues[idx], config.confidenceLevel, config.probabilityThreshold),
     }));
 
     // ── Compute sensitivity for each output ─────────────────────

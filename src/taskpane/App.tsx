@@ -67,7 +67,7 @@ export const App: React.FC = () => {
                     />
                 )}
                 {activeTab === "results" && (
-                    <ResultsDashboard results={sim.results} />
+                    <ResultsDashboard results={sim.results} threshold={sim.config.probabilityThreshold} />
                 )}
                 {activeTab === "sensitivity" && (
                     <SensitivityPanel results={sim.results} />

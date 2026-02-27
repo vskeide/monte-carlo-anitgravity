@@ -28,6 +28,7 @@ export function useSimulation(): UseSimulationReturn {
         iterations: DEFAULT_ITERATIONS,
         seed: DEFAULT_SEED,
         confidenceLevel: DEFAULT_CONFIDENCE,
+        probabilityThreshold: 0,
     });
 
     const [results, setResults] = useState<SimulationResults | null>(null);

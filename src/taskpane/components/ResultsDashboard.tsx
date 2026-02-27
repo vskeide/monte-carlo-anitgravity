@@ -12,9 +12,10 @@ import { StatisticsTable } from "./StatisticsTable";
 
 interface Props {
     results: SimulationResults | null;
+    threshold?: number;
 }
 
-export const ResultsDashboard: React.FC<Props> = ({ results }) => {
+export const ResultsDashboard: React.FC<Props> = ({ results, threshold = 0 }) => {
     const [selectedOutputIdx, setSelectedOutputIdx] = useState(0);
 
     if (!results || results.outputs.length === 0) {
@@ -77,7 +78,7 @@ export const ResultsDashboard: React.FC<Props> = ({ results }) => {
                         </div>
                     </div>
                     <div>
-                        <div style={{ opacity: 0.7, marginBottom: 2 }}>P(X &lt; 0)</div>
+                        <div style={{ opacity: 0.7, marginBottom: 2 }}>P(X &lt; {threshold.toLocaleString(undefined, { maximumFractionDigits: 4 })})</div>
                         <div style={{ fontWeight: 700, fontSize: 16 }}>
                             {(output.stats.probNegative * 100).toFixed(1)}%
                         </div>
