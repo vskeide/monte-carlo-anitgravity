@@ -97,7 +97,7 @@ export const ResultsDashboard: React.FC<Props> = ({ results, threshold = 0 }) =>
             </div>
 
             {/* ── Statistics table ────────────────────────────── */}
-            <StatisticsTable stats={output.stats} name={output.name} />
+            <StatisticsTable stats={output.stats} name={output.name} threshold={threshold} />
         </div>
     );
 };

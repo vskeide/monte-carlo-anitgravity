@@ -78,7 +78,7 @@ export const ExportPanel: React.FC<Props> = ({ results }) => {
                         ["95th Percentile", stats.percentiles.p95],
                         ["90% CI Lower", stats.confidenceInterval[0]],
                         ["90% CI Upper", stats.confidenceInterval[1]],
-                        ["P(X < 0)", stats.probNegative],
+                        [`P(X < ${results.config.probabilityThreshold})`, stats.probNegative],
                     ];
 
                     sheet.getCell(row, 0).values = [["Statistic"]];

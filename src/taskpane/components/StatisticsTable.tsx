@@ -9,9 +9,10 @@ import { formatNumber, formatPercent } from "../../shared/constants";
 interface Props {
     stats: OutputStatistics;
     name: string;
+    threshold?: number;
 }
 
-export const StatisticsTable: React.FC<Props> = ({ stats, name }) => {
+export const StatisticsTable: React.FC<Props> = ({ stats, name, threshold = 0 }) => {
     const rows: [string, string][] = [
         ["Iterations", stats.count.toLocaleString()],
         ["Minimum", formatNumber(stats.minimum)],
@@ -35,7 +36,7 @@ export const StatisticsTable: React.FC<Props> = ({ stats, name }) => {
         ["───────────", ""],
         ["90% CI Lower", formatNumber(stats.confidenceInterval[0])],
         ["90% CI Upper", formatNumber(stats.confidenceInterval[1])],
-        ["P(X < 0)", formatPercent(stats.probNegative)],
+        [`P(X < ${threshold})`, formatPercent(stats.probNegative)],
     ];
 
     return (
