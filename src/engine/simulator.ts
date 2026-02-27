@@ -94,10 +94,10 @@ export async function runSimulation(
                 return range;
             });
 
-            // Load output ranges
-            const outputRanges = outputs.map((out) => {
+            // Load output cell formulas so we can parse out the real reference
+            const outputFormulaRanges = outputs.map((out) => {
                 const range = sheet.getRange(out.cellAddress);
-                range.load("values");
+                range.load("formulas");
                 return range;
             });
 
@@ -107,6 +107,28 @@ export async function runSimulation(
             const originalFormulas = inputRanges.map(
                 (r) => r.formulas[0][0] as string
             );
+
+            // Parse MC.OUTPUT formulas to find the real cell references
+            // e.g. "=MC.OUTPUT(B11, \"EV\")" → "B11"
+            // We read from these native cells instead of the custom function cells
+            const outputReadRanges = outputs.map((out, idx) => {
+                const formula = outputFormulaRanges[idx].formulas[0][0] as string;
+                console.log(`[MC] Output "${out.name}" formula: ${formula}`);
+                const match = formula.match(/MC\.OUTPUT\s*\(\s*([A-Za-z]+\d+)/i);
+                if (match) {
+                    console.log(`[MC] → reading from native cell: ${match[1]}`);
+                    const refRange = sheet.getRange(match[1]);
+                    refRange.load("values");
+                    return refRange;
+                }
+                // Fallback: read the output cell itself
+                console.log(`[MC] → no cell ref found, reading output cell directly`);
+                const fallback = sheet.getRange(out.cellAddress);
+                fallback.load("values");
+                return fallback;
+            });
+
+            await ctx.sync();
 
             try {
                 // ── Iteration Loop ──────────────────────────────
@@ -130,14 +152,14 @@ export async function runSimulation(
                     // Recalculate
                     ctx.application.calculate(Excel.CalculationType.full);
 
-                    // Read outputs
-                    for (const r of outputRanges) {
+                    // Read outputs from the NATIVE referenced cells (not MC.OUTPUT)
+                    for (const r of outputReadRanges) {
                         r.load("values");
                     }
                     await ctx.sync();
 
                     for (let k = 0; k < outputs.length; k++) {
-                        const val = outputRanges[k].values[0][0];
+                        const val = outputReadRanges[k].values[0][0];
                         outputValues[k].push(
                             typeof val === "number" ? val : parseFloat(String(val)) || 0
                         );
